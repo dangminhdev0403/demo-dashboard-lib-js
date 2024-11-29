@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard CTV - Pro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Unique CSS namespace for CTV dashboard */
+        
+        .ctv-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.ctv-modal-content {
+    background: var(--ctv-secondary);
+    padding: 2rem;
+    border-radius: var(--ctv-radius);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    transform: translateY(-20px);
+    opacity: 0;
+}
+
+.ctv-modal-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: none;
+    border: none;
+    color: var(--ctv-primary);
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.ctv-input-group {
+    margin-bottom: 1.5rem;
+}
+
+.ctv-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--ctv-accent);
+    border-radius: var(--ctv-radius);
+    background: var(--ctv-bg);
+    color: var(--ctv-primary);
+    margin-top: 0.5rem;
+}
+
+.ctv-bank-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--ctv-accent);
+    border-radius: var(--ctv-radius);
+    background: var(--ctv-bg);
+    color: var(--ctv-primary);
+    margin-top: 0.5rem;
+}
+
+.ctv-withdraw-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--ctv-accent);
+    color: white;
+    border: none;
+    border-radius: var(--ctv-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--ctv-transition);
+}
+
+.ctv-withdraw-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+}
+
+.ctv-error {
+    color: var(--ctv-danger);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+
+
+
+
+
+
+
+
+
+        .ctv-dashboard-2023 {
+            --ctv-primary: #1a1a1a;
+            --ctv-secondary: #ffffff; 
+            --ctv-accent: #0066cc;
+            --ctv-bg: #f8f9fa;
+            --ctv-success: #28a745;
+            --ctv-warning: #ffc107;
+            --ctv-danger: #dc3545;
+            --ctv-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --ctv-radius: 12px;
+            --ctv-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ctv-dashboard-2023.dark {
+            --ctv-primary: #ffffff;
+            --ctv-secondary: #1a1a1a;
+            --ctv-bg: #121212;
+            --ctv-shadow: 0 4px 6px rgba(255,255,255,0.1);
+        }
+
+        .ctv-dashboard-2023 * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .ctv-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--ctv-bg);
+            min-height: 100vh;
+        }
+
+        .ctv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--ctv-secondary);
+            border-radius: var(--ctv-radius);
+            box-shadow: var(--ctv-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .ctv-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ctv-card {
+            background: var(--ctv-secondary);
+            padding: 1.5rem;
+            border-radius: var(--ctv-radius);
+            box-shadow: var(--ctv-shadow);
+            transition: var(--ctv-transition);
+        }
+
+        .ctv-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .ctv-stats {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--ctv-accent);
+            margin: 1rem 0;
+        }
+
+        .ctv-chart {
+            background: var(--ctv-secondary);
+            padding: 1.5rem;
+            border-radius: var(--ctv-radius);
+            margin: 2rem 0;
+            box-shadow: var(--ctv-shadow);
+        }
+
+        .ctv-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .ctv-btn {
+            background: var(--ctv-accent);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--ctv-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--ctv-transition);
+            text-align: center;
+        }
+
+        .ctv-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+        }
+
+        .ctv-table-container {
+            background: var(--ctv-secondary);
+            border-radius: var(--ctv-radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--ctv-shadow);
+            overflow-x: auto;
+        }
+
+        .ctv-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .ctv-table th,
+        .ctv-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .ctv-table th {
+            background: var(--ctv-bg);
+            font-weight: 600;
+        }
+
+        .ctv-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ctv-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .ctv-status-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--ctv-success);
+        }
+
+        .ctv-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--ctv-primary);
+            opacity: 0.7;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .ctv-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .ctv-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+      <style>
+        .ctv-dashboard-2023 {
+            --ctv-primary: #1a1a1a;
+            --ctv-secondary: #ffffff;
+            --ctv-accent: #0066cc;
+            --ctv-bg: #f8f9fa;
+            --ctv-success: #28a745;
+            --ctv-warning: #ffc107;
+            --ctv-danger: #dc3545;
+            --ctv-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --ctv-radius: 12px;
+            --ctv-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ctv-dashboard-2023.dark {
+            --ctv-primary: #ffffff;
+            --ctv-secondary: #1a1a1a;
+            --ctv-bg: #121212;
+            --ctv-accent: #4d94ff;
+            --ctv-shadow: 0 4px 6px rgba(255,255,255,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--ctv-bg);
+            color: var(--ctv-primary);
+            line-height: 1.6;
+        }
+
+        .ctv-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .ctv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--ctv-secondary);
+            border-radius: var(--ctv-radius);
+            box-shadow: var(--ctv-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .ctv-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ctv-card {
+            background: var(--ctv-secondary);
+            padding: 1.5rem;
+            border-radius: var(--ctv-radius);
+            box-shadow: var(--ctv-shadow);
+            transition: var(--ctv-transition);
+        }
+
+        .ctv-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .ctv-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .ctv-modal-content {
+            background: var(--ctv-secondary);
+            padding: 2.5rem;
+            border-radius: var(--ctv-radius);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transform: translateY(-20px);
+            opacity: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .ctv-withdraw-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .ctv-input-group {
+            position: relative;
+        }
+
+        .ctv-input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--ctv-primary);
+        }
+
+        .ctv-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--ctv-accent);
+            border-radius: var(--ctv-radius);
+            background: var(--ctv-bg);
+            color: var(--ctv-primary);
+            font-size: 1rem;
+            transition: var(--ctv-transition);
+        }
+
+        .ctv-input:focus {
+            outline: none;
+            border-color: var(--ctv-accent);
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.2);
+        }
+
+        .ctv-bank-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--ctv-accent);
+            border-radius: var(--ctv-radius);
+            background: var(--ctv-bg);
+            color: var(--ctv-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5em;
+        }
+
+        .ctv-bank-info {
+            background: rgba(0,102,204,0.1);
+            padding: 1rem;
+            border-radius: var(--ctv-radius);
+            margin-top: 1rem;
+        }
+
+        .ctv-withdraw-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--ctv-accent);
+            color: white;
+            border: none;
+            border-radius: var(--ctv-radius);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--ctv-transition);
+            margin-top: 1rem;
+        }
+
+        .ctv-withdraw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+        }
+
+        .ctv-withdraw-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .ctv-error {
+            color: var(--ctv-danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .ctv-success-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        .ctv-loading {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            border-radius: var(--ctv-radius);
+        }
+
+        .ctv-loading::after {
+            content: "";
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--ctv-accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: loading 0.8s linear infinite;
+        }
+
+        @keyframes loading {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ctv-modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .ctv-input, .ctv-bank-select {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body class="ctv-dashboard-2023">
+    <div class="ctv-container">
+        <header class="ctv-header">
+            <h1>Dashboard CTV</h1>
+            <button class="ctv-btn" onclick="toggleDashboardTheme()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </header>
+
+        <div class="ctv-cards">
+            <div class="ctv-card">
+                <h3>Tổng Doanh Thu</h3>
+                <div class="ctv-stats">₫15,750,000</div>
+                <p>↑ 12% so với tháng trước</p>
+            </div>
+            <div class="ctv-card">
+                <h3>Hoa Hồng</h3>
+                <div class="ctv-stats">₫3,250,000</div>
+                <p>Khả dụng để rút</p>
+            </div>
+            <div class="ctv-card">
+                <h3>Đơn Hàng</h3>
+                <div class="ctv-stats">127</div>
+                <p>Hoàn thành tháng này</p>
+            </div>
+        </div>
+
+        <div class="ctv-chart">
+            <canvas id="ctvRevenueChart"></canvas>
+        </div>
+
+        <div class="ctv-actions">
+            <button class="ctv-btn" onclick="handleWithdraw()">Rút Tiền</button>
+            <button class="ctv-btn" onclick="handleReferral()">Link Giới Thiệu</button>
+            <button class="ctv-btn" onclick="handleAnalytics()">Báo Cáo</button>
+        </div>
+
+        <div class="ctv-table-container">
+            <h3>Lịch Sử Giao Dịch</h3>
+            <table class="ctv-table">
+                <thead>
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Loại</th>
+                        <th>Số Tiền</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>15/11/2023</td>
+                        <td>Rút tiền</td>
+                        <td>₫2,500,000</td>
+                        <td><span class="ctv-status ctv-status-success">Hoàn thành</span></td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="ctv-footer">
+            <p>© 2023 Dashboard CTV Pro - All rights reserved</p>
+        </footer>
+    </div>
+
+    
+<!-- Add this modal HTML before the closing body tag -->
+   <!-- Enhanced Withdrawal Modal -->
+   <div class="ctv-modal" id="withdrawModal">
+    <div class="ctv-modal-content">
+        <button class="ctv-modal-close" onclick="closeWithdrawModal()">×</button>
+        <h2 style="margin-bottom: 1.5rem; text-align: center;">Rút Tiền</h2>
+        
+        <form class="ctv-withdraw-form" id="withdrawForm" onsubmit="processWithdrawal(event)">
+            <div class="ctv-input-group">
+                <label>Số Tiền Muốn Rút</label>
+                <input type="number" 
+                       class="ctv-input" 
+                       id="withdrawAmount" 
+                       min="100000" 
+                       max="50000000" 
+                       placeholder="Tối thiểu 100,000đ"
+                       required
+                       oninput="formatAmount(this)">
+                <div class="ctv-error" id="amountError"></div>
+            </div>
+
+            <div class="ctv-input-group">
+                <label>Chọn Ngân Hàng</label>
+                <select class="ctv-bank-select" id="bankSelect" required onchange="updateBankInfo()">
+                    <option value="">Chọn ngân hàng</option>
+                    <option value="vcb">Vietcombank</option>
+                    <option value="tcb">Techcombank</option>
+                    <option value="acb">ACB</option>
+                    <option value="mb">MB Bank</option>
+                    <option value="tpb">TPBank</option>
+                </select>
+                <div class="ctv-bank-info" id="bankInfo" style="display: none;"></div>
+            </div>
+
+            <div class="ctv-input-group">
+                <label>Số Tài Khoản</label>
+                <input type="text" 
+                       class="ctv-input" 
+                       id="accountNumber" 
+                       placeholder="Nhập số tài khoản"
+                       required
+                       pattern="[0-9]+"
+                       minlength="9"
+                       maxlength="14">
+            </div>
+
+            <div class="ctv-input-group">
+                <label>Tên Chủ Tài Khoản</label>
+                <input type="text" 
+                       class="ctv-input" 
+                       id="accountName" 
+                       placeholder="Nhập tên chủ tài khoản"
+                       required
+                       style="text-transform: uppercase;">
+            </div>
+
+            <button type="submit" class="ctv-withdraw-btn" id="submitBtn">
+                Xác Nhận Rút Tiền
+            </button>
+        </form>
+
+        <div class="ctv-loading" id="withdrawLoading"></div>
+    </div>
+</div>
+
+<script>
+    function handleWithdraw() {
+        document.getElementById('withdrawModal').style.display = 'flex';
+        anime({
+            targets: '.ctv-modal-content',
+            translateY: [20, 0],
+            opacity: [0, 1],
+            duration: 500,
+            easing: 'easeOutCubic'
+        });
+    }
+
+    function closeWithdrawModal() {
+        anime({
+            targets: '.ctv-modal-content',
+            translateY: [0, 20],
+            opacity: [1, 0],
+            duration: 300,
+            easing: 'easeInCubic',
+            complete: function() {
+                document.getElementById('withdrawModal').style.display = 'none';
+                document.getElementById('withdrawForm').reset();
+            }
+        });
+    }
+
+    function formatAmount(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value > 50000000) value = 50000000;
+        if (value < 0) value = 0;
+        input.value = value;
+        
+        const formatted = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(value);
+        
+        document.getElementById('amountError').textContent = 
+            value < 100000 ? 'Số tiền tối thiểu là 100,000đ' : '';
+    }
+
+    function updateBankInfo() {
+        const bankSelect = document.getElementById('bankSelect');
+        const bankInfo = document.getElementById('bankInfo');
+        
+        if (bankSelect.value) {
+            const bankDetails = {
+                vcb: 'Vietcombank - Ngân hàng TMCP Ngoại thương Việt Nam',
+                tcb: 'Techcombank - Ngân hàng TMCP Kỹ thương Việt Nam',
+                acb: 'ACB - Ngân hàng TMCP Á Châu',
+                mb: 'MB Bank - Ngân hàng TMCP Quân đội',
+                tpb: 'TPBank - Ngân hàng TMCP Tiên Phong'
+            };
+            
+            bankInfo.innerHTML = `<strong>${bankDetails[bankSelect.value]}</strong>`;
+            bankInfo.style.display = 'block';
+            
+            anime({
+                targets: '#bankInfo',
+                translateY: [10, 0],
+                opacity: [0, 1],
+                duration: 500,
+                easing: 'easeOutQuad'
+            });
+        } else {
+            bankInfo.style.display = 'none';
+        }
+    }
+
+    async function processWithdrawal(event) {
+        event.preventDefault();
+        
+        const amount = document.getElementById('withdrawAmount').value;
+        const bank = document.getElementById('bankSelect').value;
+        const accountNumber = document.getElementById('accountNumber').value;
+        const accountName = document.getElementById('accountName').value;
+
+        if (!amount || amount < 100000) {
+            document.getElementById('amountError').textContent = 'Số tiền không hợp lệ';
+            return;
+        }
+
+        document.getElementById('withdrawLoading').style.display = 'flex';
+        document.getElementById('submitBtn').disabled = true;
+
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const newTransaction = {
+                date: new Date().toLocaleDateString('vi-VN'),
+                amount: Number(amount).toLocaleString('vi-VN'),
+                bank: bank.toUpperCase(),
+                status: 'Đang xử lý'
+            };
+
+            updateTransactionTable(newTransaction);
+            showSuccessMessage();
+
+        } catch (error) {
+            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+        } finally {
+            document.getElementById('withdrawLoading').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+    }
+
+    function updateTransactionTable(transaction) {
+        const tbody = document.querySelector('.ctv-table tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${transaction.date}</td>
+            <td>Rút tiền - ${transaction.bank}</td>
+            <td>₫${transaction.amount}</td>
+            <td><span class="ctv-status" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;">
+                ${transaction.status}
+            </span></td>
+        `;
+        tbody.insertBefore(newRow, tbody.firstChild);
+
+        anime({
+            targets: newRow,
+            translateX: [-20, 0],
+            opacity: [0, 1],
+            duration: 500,
+            easing: 'easeOutQuad'
+        });
+    }
+
+    function showSuccessMessage() {
+        const modalContent = document.querySelector('.ctv-modal-content');
+        modalContent.innerHTML = `
+            <svg class="ctv-success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h2 style="text-align: center; margin-bottom: 1rem;">Yêu Cầu Thành Công!</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">
+                Yêu cầu rút tiền của bạn đã được gửi thành công.<br>
+                Chúng tôi sẽ xử lý trong vòng 24h làm việc.
+            </p>
+            <button class="ctv-withdraw-btn" onclick="closeWithdrawModal()">Đóng</button>
+        `;
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('withdrawModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeWithdrawModal();
+        }
+    });
+</script>
+</body>
+
+
+</html>
