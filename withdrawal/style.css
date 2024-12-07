@@ -15,7 +15,7 @@
 
 main.affiliate-page {
     background: var(--secondary);
-    color: var(--primary);
+    color:  var(--gradient);
     line-height: 1.6;
     overflow-x: hidden;
 }
@@ -276,5 +276,136 @@ main.affiliate-page {
 
     .affiliate-page .stats {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+.guide-section {
+    padding: 80px 0;
+    background: var(--secondary);
+}
+
+.guide-container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.guide-block {
+    background: var(--secondary);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.guide-title {
+    font-size: 24px;
+    color:  var(--gradient);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.step-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border: 2px solid  var(--gradient);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    background:  var(--gradient);
+    color: var(--secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.step-content h4 {
+    color:  var(--gradient);
+    margin-bottom: 10px;
+}
+
+.operation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+}
+
+.operation-card {
+    text-align: center;
+    padding: 30px;
+    border: 2px solid  var(--gradient);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.operation-card:hover {
+    transform: translateY(-5px);
+    background:  var(--gradient);
+    color: var(--secondary);
+}
+
+.operation-card i {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color:  var(--gradient);
+}
+
+.operation-card:hover i {
+    color: var(--secondary);
+}
+
+.operation-card h4 {
+    color:  var(--gradient);
+    margin-bottom: 15px;
+}
+
+.operation-card:hover h4 {
+    color: var(--secondary);
+}
+
+.btn-step {
+    display: inline-block;
+    padding: 10px 20px;
+    background:  var(--gradient);
+    color: var(--secondary);
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-step:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .guide-container {
+        gap: 40px;
+    }
+    
+    .guide-block {
+        padding: 20px;
     }
 }

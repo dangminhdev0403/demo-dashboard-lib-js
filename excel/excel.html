@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExcelExportPlus Test - Different Table Formats</title>
+    <script src="./excelexport.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            width: 100%;
+            table-layout: auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .horizontal-table {
+            width: 100%;
+        }
+        .vertical-table {
+            width: 40%;
+            margin: auto;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test ExcelExportPlus - Different Table Formats</h1>
+
+    <!-- Bảng ngang -->
+    <h2>Bảng ngang</h2>
+    <table class="horizontal-table ">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Sản phẩm</th>
+                <th>Giá (VND)</th>
+                <th>Số lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Điện thoại</td>
+                <td>10,000,000</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Laptop</td>
+                <td>20,000,000</td>
+                <td>3</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Bảng dọc -->
+    <h2>Bảng dọc</h2>
+    <table class="vertical-table">
+        <thead>
+            <tr>
+                <th>Thông tin</th>
+                <th>Giá trị</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tên sản phẩm</td>
+                <td>Điện thoại</td>
+            </tr>
+            <tr>
+                <td>Giá</td>
+                <td>10,000,000</td>
+            </tr>
+            <tr>
+                <td>Số lượng</td>
+                <td>5</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Các nút kiểm tra -->
+    <button onclick="excelExport.export('.horizontal-table', 'Horizontal_Table')">Xuất Bảng ngang</button>
+    <button onclick="excelExport.export('.vertical-table', 'Vertical_Table')">Xuất Bảng dọc</button>
+    
+</body>
+</html>

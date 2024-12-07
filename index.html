@@ -1,156 +1,394 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Affiliate Platform</title>
+    <title>Dashboard Test chức năng </title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary: #000000;
+            --secondary: #ffffff;
+            --accent: #0066ff;
+            --gradient: linear-gradient(135deg, #000000, #333333);
+        }
+
+        [data-theme="dark"] {
+            --primary: #ffffff;
+            --secondary: #000000;
+            --accent: #00ffcc;
+            --gradient: linear-gradient(135deg, #ffffff, #cccccc);
+        }
+
+        body {
+            background: var(--secondary);
+            color: var(--primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .nav-card {
+            position: relative;
+            padding: 2rem;
+            border-radius: 16px;
+            background: var(--primary);
+            color: var(--secondary);
+            text-decoration: none;
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .nav-card:hover {
+            transform: perspective(1000px) rotateX(10deg) rotateY(10deg) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: linear-gradient(45deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+
+        .nav-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            stroke: var(--secondary);
+            stroke-width: 1.5;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.875rem;
+            opacity: 0.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.5s ease;
+        }
+    </style>
 </head>
-<main class="affiliate-page">
-   
-
-
-    <section class="hero" id="home">
-        <div class="container hero-content">
-            <h1>Kiếm tiền không giới hạn cùng chúng tôi</h1>
-            <p>Tham gia cộng đồng affiliate hàng đầu Việt Nam và tận hưởng commission hấp dẫn cùng hệ thống hỗ trợ chuyên nghiệp</p>
-            <a href="#register" class="btn">Bắt đầu ngay</a>
+<body>
+    <div class="loading-screen">
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
         </div>
-    </section>
+    </div>
+
+    <div id="particles-js"></div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+    </button>
 
     <div class="container">
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number">30%</div>
-                <div class="stat-label">Hoa hồng</div>
+        <div class="glass-effect">
+            <div class="header">
+                <h1>Ultimate Dashboard</h1>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Hỗ trợ</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">10K+</div>
-                <div class="stat-label">Đối tác</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">1M+</div>
-                <div class="stat-label">Đơn hàng</div>
+
+            <div class="nav-grid">
+                <a href="./excel/excel.html" class="nav-card">
+                    <div class="card-content">
+                        <span class="card-title">Excel Analytics</span>
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6M8 13h8M8 17h8M8 9h8"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="./profile/index.html" class="nav-card">
+                    <div class="card-content">
+                        <span class="card-title">Profile Manager</span>
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="./withdrawal/index.html" class="nav-card">
+                    <div class="card-content">
+                        <span class="card-title">Affiliate Fontend</span>
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
 
-    <section class="benefits" id="benefits">
-        <div class="container">
-            <h2 class="section-title">Lợi ích khi tham gia</h2>
-            <div class="benefit-cards">
-                <div class="benefit-card">
-                    <i class="fas fa-percentage benefit-icon"></i>
-                    <h3>Hoa hồng cao</h3>
-                    <p>Nhận đến 30% hoa hồng cho mỗi đơn hàng thành công</p>
-                </div>
-                <div class="benefit-card">
-                    <i class="fas fa-money-bill-wave benefit-icon"></i>
-                    <h3>Thanh toán nhanh</h3>
-                    <p>Thanh toán đúng hạn vào ngày 15 hàng tháng</p>
-                </div>
-                <div class="benefit-card">
-                    <i class="fas fa-headset benefit-icon"></i>
-                    <h3>Hỗ trợ 24/7</h3>
-                    <p>Đội ngũ hỗ trợ chuyên nghiệp luôn sẵn sàng giúp đỡ</p>
-                </div>
+    <div class="container">
+        <div class="glass-effect">
+            <div class="header">
+                <h1>Docs javacripts lib</h1>
+            </div>
+
+            <div class="nav-grid">
+                <a href="./excel/test.html" class="nav-card">
+                    <div class="card-content">
+                        <span class="card-title">ExcelExport</span>
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6M8 13h8M8 17h8M8 9h8"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="./loadding/index.html" class="nav-card">
+                    <div class="card-content">
+                        <span class="card-title">V0 Loader</span>
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <a href="./withdrawal/index.html" class="nav-card">
+                    <div class="card-content">
+                        <span class="card-title">Affiliate Fontend</span>
+                        <svg class="card-icon" viewBox="0 0 24 24">
+                            <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="products" id="products">
-        <div class="container">
-            <h2 class="section-title">Sản phẩm nổi bật</h2>
-            <div class="product-grid">
-                <div class="product-card">
-                    <img src="https://via.placeholder.com/400x300" alt="Product 1" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Sản phẩm cao cấp 1</h3>
-                        <span class="commission">Hoa hồng: 30%</span>
-                        <p>Mô tả chi tiết về sản phẩm và các ưu điểm nổi bật</p>
-                        <a href="#" class="btn">Lấy link affiliate</a>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <img src="https://via.placeholder.com/400x300" alt="Product 2" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Sản phẩm cao cấp 2</h3>
-                        <span class="commission">Hoa hồng: 25%</span>
-                        <p>Mô tả chi tiết về sản phẩm và các ưu điểm nổi bật</p>
-                        <a href="#" class="btn">Lấy link affiliate</a>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <img src="https://via.placeholder.com/400x300" alt="Product 3" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Sản phẩm cao cấp 3</h3>
-                        <span class="commission">Hoa hồng: 20%</span>
-                        <p>Mô tả chi tiết về sản phẩm và các ưu điểm nổi bật</p>
-                        <a href="#" class="btn">Lấy link affiliate</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
+    <footer class="footer">
+        <p>© 2024 Ultimate Dashboard. Crafted with precision.</p>
+    </footer>
 
     <script>
-        // Animations
-        anime({
-            targets: '.hero-content',
-            translateY: [50, 0],
-            opacity: [0, 1],
-            duration: 1000,
-            easing: 'easeOutExpo'
-        });
-
-        anime({
-            targets: '.stat-card',
-            translateY: [50, 0],
-            opacity: [0, 1],
-            delay: anime.stagger(100),
-            duration: 800,
-            easing: 'easeOutExpo'
-        });
-
-        anime({
-            targets: '.benefit-card',
-            translateY: [50, 0],
-            opacity: [0, 1],
-            delay: anime.stagger(100),
-            duration: 800,
-            easing: 'easeOutExpo'
-        });
-
-        // Dark mode toggle
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                document.documentElement.style.setProperty('--primary', '#ffffff');
-                document.documentElement.style.setProperty('--secondary', '#1a1a1a');
-            } else {
-                document.documentElement.style.setProperty('--primary', '#000000');
-                document.documentElement.style.setProperty('--secondary', '#ffffff');
+        // Particles.js Configuration
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80 },
+                color: { value: '#000000' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#000000',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 3
+                }
             }
+        });
+
+        // Loading Screen Animation
+        window.addEventListener('load', () => {
+            const progress = document.querySelector('.loading-progress');
+            const loadingScreen = document.querySelector('.loading-screen');
+            
+            progress.style.width = '100%';
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            
+            // Update particles color
+            const particleColor = newTheme === 'dark' ? '#ffffff' : '#000000';
+            pJSDom[0].pJS.particles.color.value = particleColor;
+            pJSDom[0].pJS.particles.line_linked.color = particleColor;
+            pJSDom[0].pJS.fn.particlesRefresh();
         }
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+        // Card Hover Effects
+        document.querySelectorAll('.nav-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = -(x - centerX) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
             });
         });
+
+        // Initial Animations
+        anime({
+            targets: '.header',
+            opacity: [0, 1],
+            translateY: [50, 0],
+            duration: 1500,
+            easing: 'easeOutExpo'
+        });
+
+        anime({
+            targets: '.nav-card',
+            opacity: [0, 1],
+            translateY: [100, 0],
+            delay: anime.stagger(200),
+            duration: 1500,
+            easing: 'easeOutExpo'
+        });
     </script>
-</main>
+</body>
 </html>
